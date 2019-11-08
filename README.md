@@ -12,7 +12,7 @@ python CreateDB.py
 python Main.py
 ```
 
-## Screenshot
+## Screenshots
 <p align="center">
     <img src="images/screenshot-1.jpg" width="360" height="680">
     <img src="images/screenshot-2.jpg" width="360" height="680">
