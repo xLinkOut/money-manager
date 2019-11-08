@@ -1,4 +1,4 @@
-# Money Manager Bot
+# 🧾 Money Manager Bot
 A money manager Telegram bot as simple as possible. It's ugly, but it works. I coded this at the beginning of my Python journey.
 
 ## Installation
