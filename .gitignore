@@ -4,3 +4,4 @@ src/Database.db
 
 # Directories
 venv/
+src/__pycache__
