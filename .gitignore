@@ -1,0 +1,6 @@
+# Files
+src/*.pyc
+src/Database.db
+
+# Directories
+venv/
