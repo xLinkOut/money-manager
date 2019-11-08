@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-
-# Imposto la codifica su UTF8 per il supporto alle Emoji
-import sys
-#from importlib import reload
-#reload(sys)  
-#sys.setdefaultencoding('utf8')
-
-# Importo le librerie e i moduli necessari
 import telebot, logging, urllib, os, sqlite3, string
 import keyboard, statements
+from os.path import isfile
+from re import search
 
 # Imposto un logger di eventi
 logger = telebot.logger
@@ -27,10 +21,10 @@ currentMoneyData = {
 
 # File del database
 databaseFile = "Database.db"
-# Set di caratteri printabili per lo strip delle emoji nel comando 'catena'
-printable = set(string.printable)
 
-crashCounter = 0
+if not isfile(databaseFile):
+	print("Missing database!")
+	exit(-1)
 
 # Handler per il comando start
 @bot.message_handler(commands=['start'])
@@ -55,9 +49,13 @@ def soldiNuovaEntrata(message):
 	if message.text == '/cancel':
 		bot.send_message(message.from_user.id,statements.IT.OperazioneAnnullata,reply_markup=keyboard.Start,parse_mode='markdown')
 		return
-	currentMoneyData['soldi'] = message.text
-	msg = bot.send_message(message.from_user.id,statements.IT.DescrizioneNuovaEntrata,reply_markup=keyboard.Cancel,parse_mode='markdown')
-	bot.register_next_step_handler(msg, descrizioneNuovaEntrata)
+	if search(r"^[0-9]{1,9}(\,|.|$)[0-9]{0,2}(€){0,1}$", message.text):
+		currentMoneyData['soldi'] = message.text
+		msg = bot.send_message(message.from_user.id,statements.IT.DescrizioneNuovaEntrata,reply_markup=keyboard.Cancel,parse_mode='markdown')
+		bot.register_next_step_handler(msg, descrizioneNuovaEntrata)
+	else:
+		msg = bot.send_message(message.from_user.id,"Formato errato.")
+		bot.register_next_step_handler(msg,soldiNuovaEntrata)
 
 def descrizioneNuovaEntrata(message):
 	if message.text == '/cancel':
@@ -118,7 +116,7 @@ def bilancio(pagina):
     # LIMIT INT_1,INT_2
     #   INT_1 = INDICE DA DOVE PARTIRE
     #   INT_2 = QUANTE RIGHE SELEZIONARE
-    c.execute("SELECT * FROM SOLDI LIMIT ?, 3 ",[inf])
+    c.execute("SELECT * FROM SOLDI ORDER BY DATA DESC LIMIT ?, 3 ",[inf])
     result = c.fetchall()
     if len(result) == 0:
         return None
@@ -160,15 +158,4 @@ def next(message):
 	else:
 		bot.answer_callback_query(message.id,statements.IT.NoRecordSuccessivi)		
 
-# While principale per impedire che un crash/mancanza di connessione interrompa il funzionamento del bot
-#while True:
-	#try:
-		# Metto il bot in uno stato di polling, in attesa di nuovi messaggi
 bot.polling()
-	#except Exception as e:
-		# Se si verifica un errore, catturo l'eccezione, la stampo sul terminale e riparto
-		#print(e)
-		#crashCounter = crashCounter + 1 
-	#if crashCounter > 50:
-		#bot.send_message('',"Crash!")
-		#break
