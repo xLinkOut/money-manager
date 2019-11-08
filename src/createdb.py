@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-import sqlite3,os
+
+import sqlite3
+from os.path import isfile
+from os import remove
 
 # Specifica il file del database
 databaseFile = "Database.db"
 
-# COMMENTATO PER SICUREZZA! DECOMMENTARE QUESTE DUE ISTRUZIONE PER INIZIALIZZARE UN NUOVO DATABASE
 # Se esiste il vecchio database
-if(os.path.isfile(databaseFile)):
+if(isfile(databaseFile)):
     # Lo cancella
-    os.remove(databaseFile)
+    remove(databaseFile)
 
 # Si connette al database, se non esite lo crea
 DB = sqlite3.connect(databaseFile)
@@ -27,4 +29,4 @@ DB.commit()
 DB.close()
 
 # Stampa questa frase, quindi esce
-print "Database creato con successo!"
+print("Database creato con successo!")
