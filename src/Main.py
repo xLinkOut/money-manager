@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import telebot, logging, urllib, os, sqlite3, string
-import keyboard, statements
+import Keyboard, Statements
 from os.path import isfile
 from re import search
 
@@ -9,7 +9,7 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
 # Token del bot
-API_TOKEN = ''
+API_TOKEN = 'INSERT_TOKEN_HERE'
 # Creo l'oggetto bot inizializzato con il token
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -25,6 +25,10 @@ databaseFile = "Database.db"
 if not isfile(databaseFile):
 	print("Missing database!")
 	exit(-1)
+
+if API_TOKEN == "INSERT_TOKEN_HERE" or API_TOKEN == '':
+	print("Invalid token!")
+	exit(-2)
 
 # Handler per il comando start
 @bot.message_handler(commands=['start'])
