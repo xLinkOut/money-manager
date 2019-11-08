@@ -1,4 +1,5 @@
 # Files
+.DS_Store
 src/*.pyc
 src/Database.db
 
